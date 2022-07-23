@@ -29,6 +29,10 @@ A python script which scrapes results from [RGPV results](http://result.rgpv.ac.
 
 - Watch and Wait...
 
+## Limitations
+- Option to fetch DDMCA and MCA results only.
+- Terminal user interface
+
 ## Errors? (Troubleshoot)
 - If Tessaract is not installed system-wide then find absolute path to Tesseract.exe and set "TESS_DRIVER" in config.py to the absolute path
 
