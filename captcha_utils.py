@@ -1,4 +1,5 @@
 from PIL import Image
+import PIL
 import os
 import requests
 import time
@@ -25,20 +26,27 @@ def create_dir(dir) -> str:
         return path
 
 
-def get_string(img_path) -> str:
+def get_string(img_object) -> str:
 
-     pytesseract.pytesseract.tesseract_cmd = config.TESS_DRIVER
-     result = pytesseract.image_to_string(Image.open(img_path))
-     return result
+    pytesseract.pytesseract.tesseract_cmd = config.TESS_DRIVER
+    result = pytesseract.image_to_string(img_object)
+        
+    return result
 
 def captcha_decode(captcha_url : str, dirpath : str = ".\\temp") -> str:
-    url = captcha_url
-    r = requests.get(url)
+    while True:
+        url = captcha_url
+        r = requests.get(url)
 
-    filename = 'captchaImage' + str(int(time.time())) + '.jpg'
-    fpath = os.path.join(dirpath, filename)
+        filename = 'captchaImage' + str(int(time.time())) + '.jpg'
+        fpath = os.path.join(dirpath, filename)
 
-    with open(fpath, 'wb') as out_file:
-        out_file.write(r.content)
+        with open(fpath, 'wb') as out_file:
+            out_file.write(r.content)
 
-    return ''.join( get_string(fpath).split() ).upper()[:5]
+        try:
+            img = Image.open(fpath)
+            break
+        except PIL.UnidentifiedImageError:
+            continue
+    return ''.join( get_string(img).split() ).upper()[:5]
